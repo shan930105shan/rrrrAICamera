@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>照片下載</title>
+    <style>
+        body { text-align: center; font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+        img { max-width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .btn { display: inline-block; margin-top: 20px; padding: 15px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>您的拍貼照片</h2>
+    <img id="photo" src="" alt="Loading...">
+    <br>
+    <a id="downloadBtn" href="" download="my_photo.jpg" class="btn">儲存照片到手機</a>
+
+    <script>
+        // 抓取網址中的 img 參數
+        const urlParams = new URLSearchParams(window.location.search);
+        const imgUrl = urlParams.get('img');
+
+        if (imgUrl) {
+            document.getElementById('photo').src = imgUrl;
+            document.getElementById('downloadBtn').href = imgUrl;
+        } else {
+            document.body.innerHTML = "<h1>找不到照片喔！</h1>";
+        }
+    </script>
+</body>
+</html>
