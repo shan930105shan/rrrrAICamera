@@ -5,34 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Photo Download</title>
     <style>
+        /* 基礎設定，防止捲軸出現 */
         * { box-sizing: border-box; }
-        body {
+        html, body {
             margin: 0;
             padding: 0;
-            width: 100vw;
-            height: 100vh;
-            /* 背景設定 */
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a; /* 外部背景設為深色，模擬手機框外 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 手機比例容器 (關鍵！) */
+        .mobile-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 430px; /* iPhone 15 Pro Max 寬度參考 */
+            height: 100%;
+            max-height: 932px; /* iPhone 15 Pro Max 長度參考 */
+            aspect-ratio: 9 / 16; /* 標準現代手機比例 */
             background: url('images/BG.jpg') no-repeat center center;
             background-size: cover;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            overflow: hidden; /* 防止手機晃動捲軸 */
+            padding-top: 15%; /* 根據背景圖調整照片高低 */
+            box-shadow: 0 0 50px rgba(0,0,0,0.5); /* 讓容器有立體感 */
         }
 
-        /* 顯示拍好的照片 */
+        /* 為了確保在極端比例下不跑掉 */
+        @media (min-aspect-ratio: 9/16) {
+            .mobile-wrapper {
+                height: 95vh;
+                width: auto;
+            }
+        }
+
+        /* 照片顯示區 */
         .photo-container {
-            width: 85%;
-            max-width: 400px;
-            margin-bottom: 30px;
-            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+            width: 75%;
+            margin-bottom: 40px;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
         }
 
         #photo {
             width: 100%;
             display: block;
-            border-radius: 15px; /* 稍微圓角更現代 */
+            border-radius: 12px;
         }
 
         /* 按鈕區域 */
@@ -41,6 +63,7 @@
             flex-direction: column;
             align-items: center;
             gap: 20px;
+            width: 100%;
         }
 
         .img-btn {
@@ -49,31 +72,49 @@
             background-repeat: no-repeat;
             background-position: center;
             border: none;
-            cursor: pointer;
             transition: transform 0.1s;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* 各別按鈕尺寸設定 */
+        /* 按鈕尺寸設定 */
         .save-btn {
-            width: 100px;
-            height: 100px;
+            position: absolute; /* 脫離自動排版 */
+            width: 80px;
+            height: 80px;
             background-image: url('images/download.png');
+            
+            /* 這裡可以精確調整坐標 */
+            top: 75.5%;   /* 距離頂部 65% 的位置 */
+            left: 8%;  /* 置中 */
         }
 
-        .ig-btn {
-            width: 70px;
-            height: 70px;
-            background-image: url('images/IG.png');
+        .social-row {
+            display: flex;
+            gap: 30px;
         }
 
-        .web-btn {
-            width: 70px;
-            height: 70px;
-            background-image: url('images/Web.png');
+        .social-btn {
+            width: 65px;
+            height: 65px;
         }
 
-        /* 點擊回饋 */
+        .ig-btn { 
+            position: absolute; /* 脫離自動排版 */
+            width: 65px;
+            height: 65px;
+            background-image: url('images/IG.png'); 
+            top: 70.5%;
+            left: 70%;
+        }
+        .web-btn { 
+            position: absolute; /* 脫離自動排版 */
+            width: 65px;
+            height: 65px;
+            background-image: url('images/Web.png'); 
+            top: 80.5%;
+            left: 70%; 
+        }
+
         .img-btn:active {
             transform: scale(0.9);
         }
@@ -81,17 +122,21 @@
 </head>
 <body>
 
-    <div class="photo-container">
-        <img id="photo" src="" alt="Photo">
-    </div>
-
-    <div class="button-group">
-        <a id="downloadBtn" href="" download="my_photo.jpg" class="img-btn save-btn"></a>
+    <div class="mobile-wrapper">
         
-        <div style="display: flex; gap: 30px;">
-            <a href="https://www.instagram.com/" class="img-btn ig-btn"></a>
-            <a href="https://yourwebsite.com" class="img-btn web-btn"></a>
+        <div class="photo-container">
+            <img id="photo" src="" alt="Photo">
         </div>
+
+        <div class="button-group">
+            <a id="downloadBtn" href="" download="my_photo.jpg" class="img-btn save-btn"></a>
+            
+            <div class="social-row">
+                <a href="https://www.instagram.com/ntut.ixd/" target="_blank" class="img-btn social-btn ig-btn"></a>
+                <a href="https://yourwebsite.com" target="_blank" class="img-btn social-btn web-btn"></a>
+            </div>
+        </div>
+
     </div>
 
     <script>
