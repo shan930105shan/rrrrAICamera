@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Photo Download</title>
     <style>
-        /* 基礎設定 */
         * { box-sizing: border-box; }
         html, body {
             margin: 0;
@@ -19,22 +18,22 @@
             overflow: hidden;
         }
 
-        /* 手機比例容器：強制鎖定 9:16 */
         .mobile-wrapper {
             position: relative;
             width: 100vw; 
-            /* 關鍵：高度根據寬度計算，確保比例永遠是 9:16 */
             height: calc(100vw * 16 / 9); 
             max-width: 430px; 
             max-height: calc(430px * 16 / 9);
             background: url('images/BG.jpg') no-repeat center center;
             background-size: cover;
+            /* 優化畫質 */
+            image-rendering: -webkit-optimize-contrast;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            /* 讓容器在長手機上上下置中 */
             margin: auto;
+            /* 允許內容溢出，防止任何子元件被切掉 */
+            overflow: visible !important; 
         }
 
-        /* 當螢幕太長時，以高度為基準縮放 */
         @media (min-aspect-ratio: 9/16) {
             .mobile-wrapper {
                 height: 100vh;
@@ -42,60 +41,63 @@
             }
         }
 
-        /* 照片顯示區：位置現在是相對於 9:16 的容器 */
         #photo {
             position: absolute;
             width: 38%;     
             height: auto;   
             aspect-ratio: 3 / 4; 
-            /* 使用百分比 top，因為容器高度現在已經被 aspect-ratio 固定了 */
             top: 30%;
             left: 15%;
             border-radius: 12px;
             /*border: 4px solid rgb(17, 17, 17);*/
             object-fit: cover;
+            z-index: 10;
+        }
+
+        /* 萬用按鈕樣式優化 */
+        .img-btn {
+            display: block;
+            border: none;
+            outline: none;
+            transition: transform 0.1s;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            cursor: pointer;
+            z-index: 999; /* 確保在最最最上層 */
+            overflow: visible !important; /* 按鈕本身也不准裁切 */
+            background-clip: padding-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* 下載按鈕 */
         .save-btn {
             position: absolute;
-            display: block;
-            width: 22%;
+            width: 24%; /* 稍微放大一點點緩衝 */
             aspect-ratio: 1 / 1;
-            background: url('images/download.png') no-repeat center center;
-            background-size: contain;
-            top: 75.5%;
+            background-image: url('images/download.png');
+            top: 75%;
             left: 8%;
-            border: none;
-            transition: transform 0.1s;
         }
 
         /* IG 按鈕 */
         .ig-btn { 
             position: absolute;
-            display: block;
-            width: 16%;
+            width: 18%;
             aspect-ratio: 1 / 1;
-            background: url('images/IG.png') no-repeat center center;
-            background-size: contain;
-            top: 70.5%;
-            left: 70%;
-            border: none;
-            transition: transform 0.1s;
+            background-image: url('images/IG.png');
+            top: 70%;
+            left: 66%; /* 再往左移一點，遠離邊緣 */
         }
 
         /* Web 按鈕 */
         .web-btn { 
             position: absolute;
-            display: block;
-            width: 16%;
+            width: 18%;
             aspect-ratio: 1 / 1;
-            background: url('images/Web.png') no-repeat center center;
-            background-size: contain;
-            top: 80.5%;
-            left: 70%; 
-            border: none;
-            transition: transform 0.1s;
+            background-image: url('images/Web.png');
+            top: 80%;
+            left: 66%;
         }
 
         .img-btn:active {
