@@ -5,119 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Photo Download</title>
     <style>
-        /* 基礎設定，防止捲軸出現 */
+        /* 基礎設定 */
         * { box-sizing: border-box; }
         html, body {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #1a1a1a; /* 外部背景設為深色，模擬手機框外 */
+            background-color: #1a1a1a;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
         }
 
-        /* 手機比例容器 (關鍵！) */
+        /* 手機比例容器：強制鎖定 9:16 */
         .mobile-wrapper {
             position: relative;
-            width: 100%;
-            max-width: 430px; /* iPhone 15 Pro Max 寬度參考 */
-            height: 100%;
-            max-height: 932px; /* iPhone 15 Pro Max 長度參考 */
-            aspect-ratio: 9 / 16; /* 標準現代手機比例 */
+            width: 100vw; 
+            /* 關鍵：高度根據寬度計算，確保比例永遠是 9:16 */
+            height: calc(100vw * 16 / 9); 
+            max-width: 430px; 
+            max-height: calc(430px * 16 / 9);
             background: url('images/BG.jpg') no-repeat center center;
             background-size: cover;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 15%; /* 根據背景圖調整照片高低 */
-            box-shadow: 0 0 50px rgba(0,0,0,0.5); /* 讓容器有立體感 */
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            /* 讓容器在長手機上上下置中 */
+            margin: auto;
         }
 
-        /* 為了確保在極端比例下不跑掉 */
+        /* 當螢幕太長時，以高度為基準縮放 */
         @media (min-aspect-ratio: 9/16) {
             .mobile-wrapper {
-                height: 95vh;
-                width: auto;
+                height: 100vh;
+                width: calc(100vh * 9 / 16);
             }
         }
 
-        /* 照片顯示區 */
-        .photo-container {
-            width: 50%;
-            margin-bottom: 40px;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-        }
-
+        /* 照片顯示區：位置現在是相對於 9:16 的容器 */
         #photo {
-            position: absolute; /* 脫離自動排版 */
-            width: 150px;
-            height: 200px;
-            top: 35%;
+            position: absolute;
+            width: 38%;     
+            height: auto;   
+            aspect-ratio: 3 / 4; 
+            /* 使用百分比 top，因為容器高度現在已經被 aspect-ratio 固定了 */
+            top: 30%;
             left: 15%;
-            display: block;
             border-radius: 12px;
-            border: 4px solid rgb(17, 17, 17); /* 4像素寬，白色，實線 */
+            /*border: 4px solid rgb(17, 17, 17);*/
+            object-fit: cover;
         }
 
-        /* 按鈕區域 */
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
-        }
-
-        .img-btn {
+        /* 下載按鈕 */
+        .save-btn {
+            position: absolute;
             display: block;
+            width: 22%;
+            aspect-ratio: 1 / 1;
+            background: url('images/download.png') no-repeat center center;
             background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
+            top: 75.5%;
+            left: 8%;
             border: none;
             transition: transform 0.1s;
-            -webkit-tap-highlight-color: transparent;
         }
 
-        /* 按鈕尺寸設定 */
-        .save-btn {
-            position: absolute; /* 脫離自動排版 */
-            width: 80px;
-            height: 80px;
-            background-image: url('images/download.png');
-            
-            /* 這裡可以精確調整坐標 */
-            top: 75.5%;   /* 距離頂部 65% 的位置 */
-            left: 8%;  /* 置中 */
-        }
-
-        .social-row {
-            display: flex;
-            gap: 30px;
-        }
-
-        .social-btn {
-            width: 65px;
-            height: 65px;
-        }
-
+        /* IG 按鈕 */
         .ig-btn { 
-            position: absolute; /* 脫離自動排版 */
-            width: 65px;
-            height: 65px;
-            background-image: url('images/IG.png'); 
+            position: absolute;
+            display: block;
+            width: 16%;
+            aspect-ratio: 1 / 1;
+            background: url('images/IG.png') no-repeat center center;
+            background-size: contain;
             top: 70.5%;
             left: 70%;
+            border: none;
+            transition: transform 0.1s;
         }
+
+        /* Web 按鈕 */
         .web-btn { 
-            position: absolute; /* 脫離自動排版 */
-            width: 65px;
-            height: 65px;
-            background-image: url('images/Web.png'); 
+            position: absolute;
+            display: block;
+            width: 16%;
+            aspect-ratio: 1 / 1;
+            background: url('images/Web.png') no-repeat center center;
+            background-size: contain;
             top: 80.5%;
             left: 70%; 
+            border: none;
+            transition: transform 0.1s;
         }
 
         .img-btn:active {
@@ -128,20 +106,11 @@
 <body>
 
     <div class="mobile-wrapper">
-        
-        <div class="photo-container">
-            <img id="photo" src="" alt="Photo">
-        </div>
+        <img id="photo" src="" alt="Photo">
 
-        <div class="button-group">
-            <a id="downloadBtn" href="" download="my_photo.jpg" class="img-btn save-btn"></a>
-            
-            <div class="social-row">
-                <a href="https://www.instagram.com/ntut.ixd/" target="_blank" class="img-btn social-btn ig-btn"></a>
-                <a href="https://rrrr-website.vercel.app/" target="_blank" class="img-btn social-btn web-btn"></a>
-            </div>
-        </div>
-
+        <a id="downloadBtn" href="" download="my_photo.jpg" class="img-btn save-btn"></a>
+        <a href="https://www.instagram.com/ntut.ixd/" target="_blank" class="img-btn ig-btn"></a>
+        <a href="https://rrrr-website.vercel.app/" target="_blank" class="img-btn web-btn"></a>
     </div>
 
     <script>
